@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <title>IGUAZÚ - Destinos</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="icon" href="assets/img/logo.png" type="image/x-icon">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+</head>
+
+<body>
+    <!-- Header -->
+    <nav class="bg-white dark:bg-zinc-900 shadow-md">
+        <div class="container mx-auto px-4 py-2 flex justify-between items-center">
+            <div class="text-xl font-bold text-green-600">IGUAZÚ Tours Express</div>
+            <div class="space-x-4 flex items-center">
+                <a href="index.html" class="text-zinc-700 dark:text-zinc-300">Inicio</a>
+                <a href="destinos.html" class="text-zinc-700 dark:text-zinc-300">Destinos</a>
+                <a href="galeria.html" class="text-zinc-700 dark:text-zinc-300">Galería</a>
+                <a href="https://www.facebook.com/TourExpressIguazu/" target="_blank"
+                    class="text-zinc-700 dark:text-zinc-300"><i class="fab fa-facebook-f"></i></a>
+                <a href="#" class="text-zinc-700 dark:text-zinc-300 hidden"><i class="fab fa-instagram"></i></a>
+                <a href="#" class="text-zinc-700 dark:text-zinc-300 hidden"><i class="fab fa-tiktok"></i></a>
+            </div>
+        </div>
+    </nav>
+    <!-- Close Header -->
+
+    <div class="bg-zinc-100 dark:bg-zinc-900 text-zinc-900 dark:text-zinc-100 min-h-screen">
+        <!-- Open Content -->
+        <section class="bg-light">
+            <div class="container mx-auto p-4">
+                <div class="flex flex-col md:flex-row bg-white dark:bg-zinc-800 p-4 rounded-lg shadow-md">
+                    <div class="md:w-1/2 p-4 flex justify-center items-center">
+                        <img style="max-height: 400px; width: auto;" class="w-full rounded-lg"
+                            src="assets/img/viaje.jpeg" alt="Tour Express Iguazu" id="destino-detail">
+                    </div>
+                    <div class="md:w-1/2 p-4 flex flex-col justify-between relative">
+                        <div class="absolute top-4 right-4 text-3xl font-bold text-green-500" id="destino_precio"></div>
+                        <div>
+                            <h2 class="text-2xl font-semibold mb-4" id="destino_nombre"></h2>
+                            <br>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong><i class="fas fa-flag text-green-500"></i> País:</strong> <span id="destino_pais"></span></p>
+                                </div>
+                                <div>
+                                    <p><strong><i class="fas fa-city text-green-500"></i> Ciudad:</strong> <span id="destino_ciudad"></span></p>
+                                </div>
+                            </div>
+                            <br>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <p><strong><i class="fas fa-language text-green-500"></i> Idioma:</strong> <span id="destino_idioma"></span></p>
+                                </div>
+                                <div>
+                                    <p><strong><i class="fas fa-cloud-sun text-green-500"></i> Clima:</strong> <span id="destino_clima"></span></p>
+                                </div>
+                            </div>
+                            <div>
+                                <p><strong><i class="fas fa-landmark text-green-500"></i> Atracciones:</strong> <span id="destino_atracciones"></span></p>
+                            </div>
+                        </div>
+                        <a id="consultar-btn" href="#"
+                            class="bg-green-500 text-white py-2 px-4 rounded-lg mt-4 w-full text-center"
+                            target="_blank">Consultar</a>
+                    </div>
+                </div>
+
+                <div class="mt-8">
+                    <h3 class="text-xl font-semibold mb-4">Otros Destinos</h3>
+                    <div class="grid grid-cols-1 md:grid-cols-5 gap-4" id="destino-lista">
+                        <!-- Aquí se generarán dinámicamente los otros destinos -->
+                    </div>
+                </div>
+            </div>
+        </section>
+        <!-- Close Content -->
+
+        <!-- Start Footer -->
+        <footer class="bg-white dark:bg-zinc-800 p-4 text-center">
+            <div class="flex justify-center space-x-4 mb-4">
+                <a href="#" class="text-zinc-900 dark:text-zinc-100">Política de privacidad</a>
+                <a href="#" class="text-zinc-900 dark:text-zinc-100">Términos y Condiciones</a>
+            </div>
+            <p class="text-zinc-900 dark:text-zinc-100">© 2024 Creado por Yésica. Todos los derechos reservados</p>
+        </footer>
+        <!-- End Footer -->
+    </div>
+
+    <script src="assets/js/api.js"></script>
+    <script>
+        let destinosData = [];
+
+        function getDestinoDetails(iD_Destino) {
+            fetch(`https://localhost:7047/api/Destino/${iD_Destino}`)
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data);
+                    document.getElementById("destino_nombre").innerHTML = data.nombre;
+                    document.getElementById("destino_pais").innerHTML = data.pais;
+                    document.getElementById("destino_ciudad").innerHTML = data.ciudad;
+                    document.getElementById("destino_atracciones").innerHTML = data.atracciones;
+                    document.getElementById("destino_clima").innerHTML = data.clima;
+                    document.getElementById("destino_idioma").innerHTML = data.idioma;
+                    document.getElementById("destino_precio").innerHTML = data.moneda;
+
+                    // Update WhatsApp link
+                    const message = `Hola, tengo una consulta sobre el destino ${data.nombre}, ubicado en ${data.ciudad}, ${data.pais}.`;
+                    document.getElementById("consultar-btn").href = `https://wa.me/51949804809?text=${encodeURIComponent(message)}`;
+                })
+                .catch(error => console.error(error));
+        }
+
+        function fetchOtherDestinos() {
+            fetch("https://localhost:7047/api/Destino")
+                .then(response => response.json())
+                .then(data => {
+                    mostrarDestinos(data);
+                })
+                .catch(error => console.error(error));
+        }
+
+        function mostrarDestinos(data) {
+            let destinoList = document.getElementById("destino-lista");
+            let itemsPerPage = 5; // Mostrar 5 destinos por fila
+            let currentPage = 1;
+            let startIndex = (currentPage - 1) * itemsPerPage;
+            let endIndex = startIndex + itemsPerPage;
+            let destinos = data.slice(startIndex, endIndex);
+
+            destinoList.innerHTML = "";
+
+            destinos.forEach(destino => {
+                let destinoCard = document.createElement("div");
+                destinoCard.classList.add("col-span-1");
+                destinoCard.innerHTML = `
+                <div class="bg-white dark:bg-zinc-800 p-4 rounded-lg shadow">
+                    <img style="width: 50px" src="assets/img/logo.png" alt="${destino.nombre}" class="w-full h-auto rounded-lg mb-4">
+                    <h2 class="text-xl font-bold mb-2 truncate text-green-500">${destino.nombre}</h2>
+                    <p class="mb-2"><i class="fas fa-map-marker-alt text-green-500"></i> ${destino.pais} - ${destino.ciudad}</p>
+                    <p class="mb-2"><i class="fas fa-landmark text-green-500"></i> ${destino.atracciones}</p>
+                    <p class="mb-2"><i class="fas fa-cloud-sun text-green-500"></i> ${destino.clima}</p>
+                    <p class="mb-2"><i class="fas fa-language text-green-500"></i> ${destino.idioma}</p>
+                    <p class="mb-2"><i class="fas fa-money-bill-wave text-green-500"></i> Moneda: ${destino.moneda}</p>
+                    <a href="destino-single.html?iD_Destino=${destino.iD_Destino}" class="block bg-green-500 text-white py-2 px-4 rounded-lg mt-4 text-center">Más Información</a>
+                </div>
+                `;
+                destinoList.appendChild(destinoCard);
+            });
+        }
+
+        window.onload = function () {
+            const urlParams = new URLSearchParams(window.location.search);
+            const iD_Destino = urlParams.get('iD_Destino');
+
+            if (iD_Destino) {
+                getDestinoDetails(iD_Destino);
+            } else {
+                console.error('No se encontró un ID de destino en la URL.');
+            }
+            fetchOtherDestinos();
+        };
+    </script>
+</body>
+
+</html>
